@@ -1,0 +1,132 @@
+# main.py
+
+class Content:
+    def __init__(self, title, kind, genre, rating, comment):
+        self.title = title
+        self.kind = kind
+        self.genre = genre
+        self.rating = rating
+        self.comment = comment
+
+    def show_info(self):
+        return f"{self.title} [{self.kind}/{self.genre}] - 추천도: {self.rating}/5\n→ {self.comment}"
+
+
+class RecommendationList:
+    def __init__(self):
+        self.contents = []
+
+    def add_content(self, content):
+        self.contents.append(content)
+
+    def recommend(self, kind, genre):
+        found = False
+        print(f"\n🎯 '{kind}' 장르 '{genre}' 추천 콘텐츠:")
+        for content in self.contents:
+            if content.kind.lower() == kind.lower() and content.genre.lower() == genre.lower():
+                print(content.show_info(), "\n")
+                found = True
+        if not found:
+            print("😥 해당 조건에 맞는 콘텐츠는 아직 없어요!")
+
+    def show_all_kinds(self):
+        kinds = set(content.kind for content in self.contents)
+        print("\n🎞 선택 가능한 콘텐츠 종류:")
+        for k in sorted(kinds):
+            print(f"- {k}")
+
+    def show_genres_by_kind(self, kind):
+        genres = set(content.genre for content in self.contents if content.kind.lower() == kind.lower())
+        if genres:
+            print(f"\n📚 '{kind}'에서 선택 가능한 장르:")
+            for g in sorted(genres):
+                print(f"- {g}")
+        else:
+            print("😢 아직 해당 종류의 콘텐츠가 없어요.")
+
+    def show_five_star_contents(self):
+        print("\n🌟 별점 5점짜리 콘텐츠 목록:")
+        count = 0
+        for content in self.contents:
+            if content.rating == 5:
+                print(content.show_info(), "\n")
+                count += 1
+        if count == 0:
+            print("별점 5점짜리 콘텐츠가 아직 없어요.")
+
+    def show_all_contents(self):
+        print("\n📚 저장된 모든 콘텐츠 목록:")
+        for content in self.contents:
+            print(content.show_info(), "\n")
+
+    def content_count(self):
+        print(f"\n📊 현재 저장된 콘텐츠 개수: {len(self.contents)}개")
+
+
+def main():
+    rec_list = RecommendationList()
+
+    # 기본 콘텐츠
+    rec_list.add_content(Content("너의 이름은", "애니메이션", "로맨스", 5, "그림도 음악도 완벽해요..."))
+    rec_list.add_content(Content("이태원 클라쓰", "드라마", "청춘", 4, "도전과 성장 이야기!"))
+    rec_list.add_content(Content("유미의 세포들", "웹툰", "일상", 4, "공감 가득! 세포들 귀여워요"))
+    rec_list.add_content(Content("명탐정 코난", "애니메이션", "추리", 5, "영원히 끝나지 않아도 좋아요"))
+    rec_list.add_content(Content("극장판 주술회전0", "애니메이션", "호러", 4, "액션과 긴장감 넘치는 스토리"))
+    rec_list.add_content(Content("라라랜드", "영화", "로맨스", 5, "음악과 감정선이 예술이에요"))
+
+    print("🎬 취미 콘텐츠 추천기에 오신 걸 환영합니다!")
+
+    while True:
+        print("\n🛠 원하시는 메뉴를 선택하세요:")
+        print("1. 콘텐츠 추천 받기")
+        print("2. 별점 5점짜리 콘텐츠 보기")
+        print("3. 새로운 콘텐츠 추가하기")
+        print("4. 전체 콘텐츠 목록 보기")
+        print("5. 저장된 콘텐츠 개수 확인")
+        print("0. 종료하기")
+
+        choice = input("👉 선택 (숫자 입력): ").strip()
+
+        if choice == "1":
+            rec_list.show_all_kinds()
+            kind = input("\n콘텐츠 종류 선택: ").strip()
+            rec_list.show_genres_by_kind(kind)
+            genre = input("장르 선택: ").strip()
+            rec_list.recommend(kind, genre)
+
+        elif choice == "2":
+            rec_list.show_five_star_contents()
+
+        elif choice == "3":
+            print("\n✏️ 새 콘텐츠 입력:")
+            title = input("제목: ").strip()
+            kind = input("종류 (예: 애니메이션, 드라마 등): ").strip()
+            genre = input("장르 (예: 로맨스, 추리 등): ").strip()
+            while True:
+                try:
+                    rating = int(input("별점 (1~5): ").strip())
+                    if 1 <= rating <= 5:
+                        break
+                    else:
+                        print("1~5 사이 숫자를 입력해주세요.")
+                except:
+                    print("숫자를 입력해주세요.")
+            comment = input("한줄 코멘트: ").strip()
+            rec_list.add_content(Content(title, kind, genre, rating, comment))
+            print(f"✅ '{title}' 추가 완료!")
+
+        elif choice == "4":
+            rec_list.show_all_contents()
+
+        elif choice == "5":
+            rec_list.content_count()
+
+        elif choice == "0":
+            print("👋 프로그램을 종료합니다. 좋은 하루 보내세요!")
+            break
+
+        else:
+            print("❗올바른 숫자를 입력해주세요.")
+
+if __name__ == "__main__":
+    main()
